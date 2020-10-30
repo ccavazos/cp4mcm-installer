@@ -1,5 +1,5 @@
 all: mcmcore mcmenablemonitoring mcmenableim
-.PHONY: all
+.PHONY: all rhacm
 
 mcmcore:
 	./1-common-services.sh
@@ -12,3 +12,6 @@ mcmenableim:
 	./cp4m/3-ldap.sh
 	./cp4m/4-CAMandIM.sh
 	./cp4m/5-CloudFormsandOIDC.sh
+
+rhacm:
+	./rhacm/2-rhacm.sh

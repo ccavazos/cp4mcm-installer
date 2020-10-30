@@ -20,6 +20,7 @@ This automation currently provides the following installation functionality:
 In development:
 
 - Ansible Tower
+- Red Hat Advanced Cluster Management 2.0
 
 ## Usage:
 
@@ -33,7 +34,8 @@ There are two ways this automation can be used.
 - `oc` command
 - You must be authenticated to your OpenShift cluster
 - `make` command
-- [IBM Entitled Registry Key](https://myibm.ibm.com/products-services/containerlibrary) 
+- [IBM Entitled Registry Key](https://myibm.ibm.com/products-services/containerlibrary)
+- If installing RHACM, [Red Hat Pull Secret](https://cloud.redhat.com/openshift/install/pull-secret)
 
 **Process**
 1. Clone repo locally:
@@ -62,6 +64,9 @@ export ENTITLED_REGISTRY_KEY="Your long key here"
 
 - If you want to install all of the components you can run `make all`
 
+- If you want to install RHACM, first you need to export the variable `RED_HAT_PULL_SECRET_PATH` with the path to your Red Hat pull secret (get it from [Red Hat here](https://cloud.redhat.com/openshift/install/pull-secret)). After that you can run `make rhacm`.
+
+- If you want to uninstall RHACM you can run `./rhacm/99-rhacm-uninstall.sh`(Need to change permissions to 755)
 
 ### Containerized execution
 
@@ -72,5 +77,4 @@ Coming soon
 - Does not work on ROKS with VPC
 - Supports online installation only
 - Supports OpenShift 4.x
-
-  
+- Installing RHACM should be done before MCM Core and you need to manually change the flag `mcmCoreDisabled` to **true** before installing MCM Core.

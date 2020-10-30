@@ -55,6 +55,13 @@ if [ $(oc get sc $CP4MCM_FILE_GID_STORAGECLASS --no-headers | wc -l) -le 0 ]; th
   CP4MCM_FILE_GID_STORAGECLASS=$storclass
 fi
 
+###########################
+# RHACM Parameters
+###########################
+RHACM_NAMESPACE="rhacm"
+RHACM_SECRET_NAME="rhacm-pull-secret"
+RHACM_OPERATOR_GROUP_NAME="rhacm-operator-group"
+
 # Additional packages can be found here: 
 ANSIBLE_SETUP_PACKAGE="ansible-tower-openshift-setup-3.7.2-1.tar.gz"
 ANSIBLE_NAMESPACE="ansible-tower"
@@ -96,6 +103,30 @@ function cssstatus {
         fi
 
         sleep 60
+    done
+}
+
+function rhacmstatus {
+    # Sleep until the operator is running
+    COUNT=0;
+    for ((time=1;time<60;time++)); do
+        WC=`oc get multiclusterhub multiclusterhub -o=jsonpath='{.status.phase}' | grep 'Running' | wc -l`
+        echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        echo "Waiting for operator to change status to Running.. retry ($time of 60)(Consecutive tries $COUNT/5)"
+        echo ""
+        oc get multiclusterhub multiclusterhub -o=jsonpath='{.metadata.name} {.status.phase}'
+        
+        if [ $WC -eq 1 ]; then
+            #  We are good
+            break
+        else
+            ((COUNT++))
+
+            if [ $COUNT -ge 5 ]; then
+            break
+            fi
+        fi
+        progress-bar 60
     done
 }
 
